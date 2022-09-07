@@ -16,9 +16,15 @@ function logger() {
 // calling / running / invoking function:
 logger();
 
+function cutFruitPieces(fruit) {
+    return fruit * 4;
+}
+
 // function declarations:
 function fruitProcessor(apples, oranges) {
-    const juice = `Juice with ${apples} apples and ${oranges} oranges.`;
+    const applePieces = cutFruitPieces(apples);
+    const orangePieces = cutFruitPieces(oranges);
+    const juice = `Juice with ${applePieces} apples and ${orangePieces} oranges.`;
     return juice;
 }
 
