@@ -65,3 +65,23 @@ const calcTempAmplitudeNew = function(t1, t2) {
 };
 const amplitudeNew = calcTempAmplitudeNew([3,5,1,0,-7],[9,8,5,12,-5]);
 console.log(amplitudeNew);
+
+// const measurement = {
+//     type: 'temp',
+//     unit: 'celsius',
+//     value: Number(prompt('Degrees celsius:')),
+// }
+
+// console.table(measurement);
+
+const printForecast = function(arr) {
+    let result = '';
+    for (let i = 0; i < arr.length; i++) {
+        result += `... ${arr[i]}°C in ${i+1} days `;
+    }
+    result += '...';
+    console.log(result);
+}
+
+printForecast([17, 21, 23])
+printForecast([12, 5, -5, 0, 4])
