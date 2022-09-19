@@ -176,6 +176,7 @@ addArrow(2, 5, 8);
 
 //SECTION Primitives vs objects
 
+/*
 let age = 30;
 let oldAge = age;
 age = 31;
@@ -192,3 +193,43 @@ const friend = me;
 friend.age = 27;
 console.log('Friend:', friend); //age 27
 console.log('Me:', me); //age 27
+*/
+
+//primitive types
+let lastName = 'Williams';
+let oldLastName = lastName;
+lastName = 'Davis';
+console.log(lastName, oldLastName);
+
+//reference types
+const jessica = {
+  firstName: 'Jessica',
+  lastName: 'Williams',
+  age: 27,
+};
+const marriedJessica = jessica;
+marriedJessica.lastName = 'Davis';
+console.log('Before marriage:', jessica);
+console.log('After marriage:', jessica);
+
+//ATTN copying objects
+const jessica2 = {
+  firstName: 'Jessica',
+  lastName: 'Williams',
+  age: 27,
+  family: ['Alice', 'Bob'],
+};
+
+const jessicaCopy = Object.assign({}, jessica2);
+//this creates a new object, however it only works on first layer (shallow copy) not deep clone (i.e. does not work on deeply nested objects)
+
+jessicaCopy.lastName = 'Davis';
+console.log('Before marriage:', jessica2); //showing Williams
+console.log('After marriage:', jessicaCopy); //showing Davis
+
+jessicaCopy.family.push('Mary');
+jessicaCopy.family.push('John');
+
+// ATTN shallow copy
+console.log('Before marriage:', jessica2); //showing 4 family members
+console.log('After marriage:', jessicaCopy); //showing 4 family members
