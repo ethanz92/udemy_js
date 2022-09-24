@@ -60,7 +60,85 @@ const restaurant = {
   },
 };
 
+// SECTION Working with Strings -
+const airline = 'TAP Air Portugal';
 
+console.log(airline.toLowerCase());
+console.log(airline.toUpperCase());
+
+// Fix capitalisation in name:
+const passenger = 'jOnAS'; // ->Jonas?
+const passengerLower = passenger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+console.log(passengerCorrect); //Jonas
+
+// Check email
+const email = 'hello@jonas.io';
+const loginEmail = '  Hello@Jonas.Io \n';
+
+const lowerEmail = loginEmail.toLowerCase();
+const trimmedEmail = lowerEmail.trim();
+console.log(trimmedEmail); //hello@jonas.io
+
+//可以写成一行，因为上面的method会return string
+const normalisedEmail = loginEmail.toLowerCase().trim()
+console.log(normalisedEmail);
+console.log(email === normalisedEmail);
+// ATTN there are also trimstart and trimend methods
+
+// Replacing
+const priceGB = '288,97£';
+const priceUS = priceGB.replace('£', '$').replace(',', '.');
+console.log(priceUS); //288.97$
+
+const announcement = 'All passengers come to boarding door 23. Boarding door 23!'
+
+console.log(announcement.replace('door', 'gate')); //only replacing first occurence
+
+console.log(announcement.replaceAll('door', 'gate')); //newly available
+
+/*
+// SECTION Working with Strings - index, slicing
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+console.log(plane[0]);
+console.log(plane[1]);
+console.log(plane[2]);
+console.log('B737'[0]); //B
+console.log(airline.length);
+console.log('B737'.length);
+
+console.log(airline.indexOf('r')); //6 - only first occurence
+console.log(airline.lastIndexOf('r')); //10 - only last occurence
+console.log(airline.indexOf('Portugal')); //8 - CASE sensitive //cannot find: -1
+
+// Slicing
+console.log(airline.slice(4)); //Air Portugal
+console.log(airline.slice(4, 7)); //Air 左闭右开
+
+console.log(airline.slice(0, airline.indexOf(' '))); //TAP
+console.log(airline.slice(airline.lastIndexOf(' ') + 1)); //Portugal
+
+console.log(airline.slice(-2)); //al
+console.log(airline.slice(1, -1)); //AP Air Portuga
+
+const checkMiddleSeat = function (seat) {
+  //B and E are middle seats
+  const s = seat.slice(-1);
+  if (s === 'B' || s === 'E') console.log('You got the middle seat');
+  else console.log('You got lucky');
+};
+
+checkMiddleSeat('11B');
+checkMiddleSeat('23C');
+checkMiddleSeat('3E');
+
+console.log(new String('jonas')); 
+console.log(typeof new String('jonas')); //object
+console.log(typeof new String('jonas').slice(1)); //string
+*/
 
 /*
 // SECTION Map iteration
