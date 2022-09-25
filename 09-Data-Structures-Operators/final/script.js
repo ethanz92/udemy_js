@@ -102,6 +102,30 @@ Afterwards, test with your own test data!
 GOOD LUCK 😀
 */
 
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+
+document.querySelector('button').addEventListener('click', function () {
+  const text = document.querySelector('textarea').value;
+  const textArray = text.split('\n');
+  // for (let i = 0; i < textArray.length; i++) {
+  //   const wordUnderScore = textArray[i].trim().toLowerCase().split('_');
+  //   const wordCamel =
+  //     wordUnderScore[0] +
+  //     wordUnderScore[1][0].toUpperCase() +
+  //     wordUnderScore[1].slice(1);
+  //   console.log(wordCamel.padEnd(20, ' ') + '✅'.repeat(i + 1));
+  for (const [i, array] of textArray.entries()) {
+    const [first, second] = array.toLowerCase().trim().split('_');
+
+    const output = `${first}${second.replace(
+      second[0],
+      second[0].toUpperCase()
+    )}`;
+    console.log(`${output.padEnd(20)}${'✅'.repeat(i + 1)}`);
+  }
+});
+
 /*
 document.body.append(document.createElement('textarea'));
 document.body.append(document.createElement('button'));
@@ -310,7 +334,7 @@ const gameEvents = new Map([
   [80, '⚽️ GOAL'],
   [92, '🔶 Yellow card'],
 ]);
-
+/*
 //1. Create an array 'events' of the different game events that happened (no duplicates)
 const events = [...new Set(gameEvents.values())];
 console.log(events);
@@ -331,7 +355,7 @@ for (const [time, event] of gameEvents) {
     `${time <= 45 ? '[FIRST HALF]' : '[SECOND HALF]'} ${time}: ${event}`
   );
 }
-
+*/
 /*
 // 1.
 const events = [...new Set(gameEvents.values())];
@@ -529,6 +553,7 @@ const game = {
     team2: 6.5,
   },
 };
+/*
 //1. Loop over the game.scored array and print each player name to the console, along with the goal number (Example: "Goal 1: Lewandowski")
 // const scored = game.scored;
 // console.log(scored);
@@ -575,7 +600,7 @@ for (const scorer of scorerList) {
   // }
 }
 console.log(scorers);
-
+*/
 /*
 // 1.
 for (const [i, player] of game.scored.entries())

@@ -4,6 +4,22 @@
 const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 
+// 🔴 Delayed Departure from FAO to TXL (11h25)
+//              Arrival from BRU to FAO (11h45)
+//   🔴 Delayed Arrival from HEL to FAO (12h05)
+//            Departure from FAO to LIS (12h30)
+
+const getCode = str => str.slice(0, 3).toUpperCase();
+
+for (const flight of flights.split('+')) {
+  const [type, from, to, time] = flight.split(';');
+  const output = `${type.startsWith('_Delayed') ? '🔴 ' : ''} ${type.replaceAll(
+    '_',
+    ' '
+  )} from ${getCode(from)} to ${getCode(to)} (${time.replace(':', 'h')})`.padStart(46);
+  console.log(output);
+}
+
 const weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
 const openingHours = {
@@ -60,6 +76,57 @@ const restaurant = {
   },
 };
 
+/*
+// SECTION ATTN Split and Join
+console.log('a+very+nice+string'.split('+')); //给出array['a', 'very', 'nice', 'string']
+console.log('Jonas Schmedtmann'.split(' '));
+
+const [firstName, lastName] = 'Jonas Schmedtmann'.split(' ');
+
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+console.log(newName); //Mr. Jonas SCHMEDTMANN
+
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpper = [];
+  // for (const n of names) {
+  //   namesUpper.push(n[0].toUpperCase() + n.slice(1)); //方法一
+  // }
+  for (const n of names) {
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase())); //方法二
+  }
+  console.log(namesUpper.join(' '));
+};
+
+capitalizeName('jessica ann smith davis');
+capitalizeName('jonas schmedtmann');
+
+// ATTN Padding
+const message = 'Go to gate 23!'
+console.log(message.padStart(20, '+')); //++++++Go to gate 23! 总长25
+console.log('jonas'.padStart(20, '+')); //+++++++++++++++jonas 总长25
+console.log(message.padStart(20, '+').padEnd(30,'+')); //++++++Go to gate 23!+++++ 总长30
+
+const maskCreditCard = function(number) {
+  const str = number + ''; //这样等同于 = String()
+  const last = str.slice(-4);
+  return last.padStart(str.length, '*');
+}
+
+console.log(maskCreditCard(43378463864647384)); //*************7384
+console.log(maskCreditCard('334859469821882221546')); //*****************1546
+
+// ATTN Repeat
+const message2 = 'Bad weather... All Departures Delayed...\n';
+console.log(message2.repeat(5)); //重复五次
+
+const planesInLine = function(n) {
+  console.log(`There are ${n} planes in line ${'🛩'.repeat(n)}`);
+};
+
+planesInLine(5); //There are 5 planes in line 🛩🛩🛩🛩🛩
+*/
+/*
 // SECTION Working with Strings -
 const airline = 'TAP Air Portugal';
 
@@ -97,6 +164,32 @@ const announcement = 'All passengers come to boarding door 23. Boarding door 23!
 console.log(announcement.replace('door', 'gate')); //only replacing first occurence
 
 console.log(announcement.replaceAll('door', 'gate')); //newly available
+
+console.log(announcement.replace(/door/g, 'gate')); //placing all occurence (g-global)
+
+// booleans
+const plane = 'Airbus A320neo';
+console.log(plane.includes('A320')); //true
+console.log(plane.includes('Boeing')); //false
+console.log(plane.startsWith('Air')); //true
+
+if(plane.startsWith('Airbus') && plane.endsWith('neo')) {
+  console.log('Part of the NEW Airbus family');
+}
+
+// Practice exercise
+const checkBaggage = function(items) {
+  const baggage = items.toLowerCase();
+  if (baggage.includes('knife') || baggage.includes('gun')) {
+    console.log('You are NOT allowed on board');
+  } else {
+    console.log('Welcome aboard!');
+  }
+}
+checkBaggage('I have a laptop, some Food and a pocket Knife');
+checkBaggage('Socks and camera')
+checkBaggage('Got some snacks and a gun for protection')
+*/
 
 /*
 // SECTION Working with Strings - index, slicing
