@@ -249,6 +249,52 @@ BONUS TEST DATA 2: [1, 5, 3, 9, 6, 1]
 GOOD LUCK 😀
 */
 
+const poll = {
+  question: 'What is your favourite programming language?',
+  options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
+  // This generates [0, 0, 0, 0]. More in the next section 😃
+  answers: new Array(4).fill(0),
+
+  //以上是starter object
+  registerNewAnswer() {
+    const answer = Number(
+      prompt(
+        ///////////////////////ATTN 注意这里join('\n')的写法：
+        `${this.question}\n${this.options.join('\n')}\n(Write option number)`
+      )
+    );
+
+    // if (![0, 1, 2, 3].includes(answer)) {
+    //   alert('Invalid input');
+    // } else {
+    //   this.answers[answer]++;
+    // }
+    [0, 1, 2, 3].includes(answer) && this.answers[answer]++;
+    //ATTN 可以简写成这样，如果前面不为真，就short circuit了，后面不会执行
+
+    this.displayResults();
+    this.displayResults('string');
+  },
+
+  displayResults(type = 'array') {
+    if (type === 'array') {
+      console.log(this.answers);
+    } else if (type === 'string') {
+      console.log(`Poll results are ${this.answers.join(', ')}`);
+    }
+  },
+};
+
+document
+  .querySelector('.poll')
+  .addEventListener('click', poll.registerNewAnswer.bind(poll));
+
+// BONUS TEST DATA 1: [5, 2, 3]
+// BONUS TEST DATA 2: [1, 5, 3, 9, 6, 1]
+
+poll.displayResults.call({ answers: [5, 2, 3] }, 'string');
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] });
+
 /*
 const poll = {
   question: 'What is your favourite programming language?',
@@ -407,4 +453,3 @@ GOOD LUCK 😀
   });
 })();
 */
-
