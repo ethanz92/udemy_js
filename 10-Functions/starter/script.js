@@ -218,4 +218,96 @@ console.log(addVAT2(100)); //123
 
 console.log(addTaxRate(0.23)(100)); //123
 */
+/*
+//SECTION Immediately Invoked Function Expression
+const runOnce = function () {
+  console.log('This will never run again');
+};
+runOnce();
 
+//IIFE
+(function () {
+  console.log('This will never run again');
+  const isPrivate = 23;
+})(); //把function装进()里当成一个statement，然后后面的()是call这个function
+
+// console.log(isPrivate); //scope chain：global无法抓取function scope里的variable
+
+(() => console.log('This will ALSO never run again'))(); //箭头函数的IIFE
+
+{
+  // const isPrivate = 23;
+  var notPrivate = 46;
+}
+// console.log(isPrivate); //cannot access in the block
+console.log(notPrivate); //46
+
+//modern js can just use {} block to make information private
+*/
+/*
+// SECTION ATTN Closures
+const secureBooking = function () {
+  let passengerCount = 0;
+
+  return function () {
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  };
+};
+
+const booker = secureBooking();
+
+booker();
+booker();
+booker();
+
+// ATTN A function has access to the variable environment (VE) of the execution context in which it was created. 
+// ATTN Closure: VE attached to the function, exactly as it was at the time and place the function was created.
+// ATTN We cannot access closed-over variables explicitly. A closure is NOT a tangible JavaScript object.
+
+console.dir(booker); //f anonymous() -> [[Scopes]] -> Closure ([[]] means internal properties that cannot be accessed by code)
+*/
+
+let f;
+
+const g = function () {
+  const a = 23;
+  f = function () {
+    console.log(a * 2);
+  };
+};
+
+g();
+f(); //46 //closure exists even if f was defined outside g block, the value of f was assigned inside the g block so closure exists for variable a. (a variable is inside the backpack of f function)
+
+const h = function () {
+  const b = 777;
+  f = function () {
+    console.log(b * 2);
+  };
+};
+
+g();
+f();
+
+// ATTN Re-assigning f function
+h(); //46
+f(); //1554 (b variable is inside the backpack of f function)
+console.dir(f); //a is no longer in the backpack of f (old closure disappears)
+
+//Example 2
+const boardPassengers = function (n, wait) {
+  const perGroup = n / 3;
+
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000); //execute function after wait * 1000ms (=1s)
+  //closure worked here, 下一行先运行，boardPassengers()理应已经移出call stack，但因为closure的机制，延迟的function还能access n和perGroup两个变量。
+  //closure比scope chain优先，global里定义了perGroup是1000，但是最后执行用的依然是60
+
+  console.log(`Will start boarding in ${wait} seconds`); //will not wait
+};
+
+const perGroup = 1000;
+boardPassengers(180, 3);
