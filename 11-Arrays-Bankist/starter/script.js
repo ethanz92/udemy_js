@@ -75,7 +75,7 @@ const displayMovements = function (movements) {
       <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-      <div class="movements__value">${mov}</div>
+      <div class="movements__value">${mov}€</div>
     </div>
     `;
 
@@ -87,6 +87,29 @@ displayMovements(account1.movements);
 
 // console.log(containerMovements.innerHTML);
 //concole里可以看到上面代码生成的HTML块
+
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
+
+  const out = acc.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = acc.movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      console.log(arr);
+      return int >= 1; //bank rule: only pay interest that is >= 1EUR
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+// calcDisplaySummary(account1.movements);
 
 //SECTION ATTN Computing username
 
@@ -100,13 +123,49 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts);
-console.log(accounts);
+// console.log(accounts);
 
-const calcPrintBalance = function (movements) {
+const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance} EUR`;
 };
-calcPrintBalance(account1.movements);
+
+// calcDisplayBalance(account1.movements);
+
+
+// SECTION Implement login: Event handler
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  //prevent form from submitting:
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //?先确定账号存在
+    //Display UI and welcome message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    //Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = ''; //从右到左
+    inputLoginPin.blur(); //去掉光标
+
+    //Display movements
+    displayMovements(currentAccount.movements);
+
+    //Display balance
+    calcDisplayBalance(currentAccount.movements);
+
+    //Display summary
+    calcDisplaySummary(currentAccount);
+  }
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -282,6 +341,33 @@ const max = movements.reduce((acc, mov) => {
 }, movements[0]);
 console.log(max); //3000
 */
+/*
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+console.log(movements);
+const eurToUsd = 1.1;
+
+// SECTION PIPELINE
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0)
+  // .map(mov => mov * eurToUsd)
+  .map((mov, i, arr) => {
+    // console.log(arr); //map的arr可以用来实时展示和check arr
+    return mov * eurToUsd;
+  })
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(totalDepositsUSD);
+
+// SECTION ATTN Find method
+
+const firstWithdrawal = movements.find(mov => mov < 0);
+console.log(movements);
+console.log(firstWithdrawal);
+
+console.log(accounts);
+
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+console.log(account);
+*/
 
 /// CHAP Challenges
 ///////////////////////////////////////
@@ -350,4 +436,26 @@ const calcAverageHumanAge = function (ages) {
 
 calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
 calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+*/
+///////////////////////////////////////
+// SECTION Coding Challenge #3
+
+/* 
+Rewrite the 'calcAverageHumanAge' function from the previous challenge, but this time as an arrow function, and using chaining!
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+/*
+const calcAverageHumanAge2 = ages =>
+  ages
+    .map(dogAge => (dogAge <= 2 ? 2 * dogAge : 16 + dogAge * 4))
+    .filter(age => age >= 18)
+    .reduce((acc, age, i, arr) => acc + age / arr.length, 0);
+
+const avg1 = calcAverageHumanAge2([5, 2, 4, 1, 15, 8, 3]);
+const avg2 = calcAverageHumanAge2([16, 6, 10, 5, 6, 1, 4]);
+console.log(avg1, avg2);
 */
