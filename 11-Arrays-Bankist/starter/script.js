@@ -62,11 +62,13 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 //SECTION LECTURE 147 Project Start/////////////////////////
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
   //有点像textContent，这里是把默认值去掉，用array里的真实值来替代（下面的forEach）
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements; //slice做一个copy，因为有chain所以不用...
+
+  movs.forEach(function (mov, i) {
     //mov is element we are looping over
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
@@ -125,13 +127,23 @@ const createUsernames = function (accs) {
 createUsernames(accounts);
 // console.log(accounts);
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} EUR`;
+const updateUI = function (acc) {
+  //Display movements
+  displayMovements(acc.movements);
+
+  //Display balance
+  calcDisplayBalance(acc);
+
+  //Display summary
+  calcDisplaySummary(acc);
+};
+
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
 // calcDisplayBalance(account1.movements);
-
 
 // SECTION Implement login: Event handler
 let currentAccount;
@@ -156,15 +168,76 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = ''; //从右到左
     inputLoginPin.blur(); //去掉光标
 
-    //Display movements
-    displayMovements(currentAccount.movements);
-
-    //Display balance
-    calcDisplayBalance(currentAccount.movements);
-
-    //Display summary
-    calcDisplaySummary(currentAccount);
+    // Update UI
+    updateUI(currentAccount);
   }
+});
+
+// SECTION Implement transfer
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault(); //ATTN 避免自动刷新
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = ''; //去掉输入框中内容
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username //'?'判断了receiver是否存在
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+});
+
+// SECTION Request Loan: Using some/every
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = ''; //去掉输入框中内容
+});
+
+// SECTION ATTN Close account: findIndex Method
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(index);
+
+    //Delete account
+    accounts.splice(index, 1); //从accounts array中去掉index位置元素
+
+    //Hide UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = ''; //去掉输入框中内容
+});
+
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 
 /////////////////////////////////////////////////
@@ -341,8 +414,8 @@ const max = movements.reduce((acc, mov) => {
 }, movements[0]);
 console.log(max); //3000
 */
-/*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+/*
 console.log(movements);
 const eurToUsd = 1.1;
 
@@ -368,6 +441,109 @@ console.log(accounts);
 const account = accounts.find(acc => acc.owner === 'Jessica Davis');
 console.log(account);
 */
+/*
+// SECTION ATTN Some and Every
+console.log(movements);
+
+//EQUALITY
+console.log(movements.includes(-130));
+
+//SOME: CONDITION
+console.log(movements.some(mov => mov === -130)); //=includes()
+const anyDeposits = movements.some(mov => mov > 0);
+console.log(anyDeposits); //true (have some mov > 0)
+
+//EVERY
+console.log(movements.every(mov => mov > 0)); //所有都是deposit？false
+console.log(account4.movements.every(mov => mov > 0)); //true, acc4只有存款
+
+//Seperate Callback
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+
+// SECTION ATTN Flat and FlatMap
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat()); //[1, 2, 3, 4, 5, 6, 7, 8]
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat()); //[Array(2), 3, 4, Array(2), 7, 8]
+console.log(arrDeep.flat(2)); //[1, 2, 3, 4, 5, 6, 7, 8] 深度参数
+
+// flat
+const overallBalance = accounts
+.map(acc => acc.movements)
+.flat()
+.reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance);
+
+// flatMap
+const overallBalance2 = accounts
+.flatMap(acc => acc.movements) //only go one level deep
+.reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance2); //same result
+*/
+/*
+// SECTION ATTN Sorting arrays
+// Strings
+const owners = ['jonas', 'zach', 'adam', 'martha'];
+console.log(owners.sort()); //sort by default work on strings
+
+// Numbers
+console.log(movements);
+//console.log(movements.sort()); //[-130, -400, -650, 1300, 200, 3000, 450, 70]不work，这里default是把他们当成了strings排序
+//return < 0, a, b
+//return > 0, b, a (switch order)
+
+//Ascending
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+movements.sort((a, b) => a - b); //这样更简单，只要结果是正数就会调换位置
+console.log(movements); //already mutated
+
+//Descending
+movements.sort((a, b) => {
+  if (a > b) return -1;
+  if (a < b) return 1;
+});
+console.log(movements);
+
+//implementing sorting balances (refer const displayMovements)
+*/
+
+// SECTION More ways to create and filling arrays
+const arr = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+const x = new Array(7);
+console.log(x); //[empty × 7] (=python [] * 7)
+console.log(x.map(() => 5)); //[empty × 7] map doesn't work
+
+// Empty arrays + Fill method
+// x.fill(1);  //[1, 1, 1, 1, 1, 1, 1]
+// x.fill(1, 3); //[empty × 3, 1, 1, 1, 1]
+x.fill(1, 3, 5); //[empty × 3, 1, 1, empty × 2]
+console.log(x);
+
+arr.fill(23, 4, 6);
+console.log(arr); //[1, 2, 3, 4, 23, 23, 7]
+
+// Array.from
+const y = Array.from({ length: 7 }, () => 1); //Array这里是函数（同new Array)
+console.log(y); //[1, 1, 1, 1, 1, 1, 1]
+
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z); //[1, 2, 3, 4, 5, 6, 7]
+
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'), el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+  // const movementsUI2 = [...document.querySelectorAll('.movements__value')]; //方法2，不推荐
+});
 
 /// CHAP Challenges
 ///////////////////////////////////////
