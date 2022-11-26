@@ -763,3 +763,38 @@ console.log(`${ownersEatTooLittle.join(' and ')}'s dogs eat too little!`);
 
 // HINT 1: Use many different tools to solve these challenges, you can use the summary lecture to choose between them 😉
 // HINT 2: Being within a range 10% above and below the recommended portion means: current > (recommended * 0.90) && current < (recommended * 1.10). Basically, the current portion should be between 90% and 110% of the recommended portion.
+
+let arr = [1, 10, 30, 50, 9, 1]
+
+const total = arr.reduce(function (acc, cur) {
+	if ((acc + cur) > 100) return acc;
+	else return acc + cur;
+}, 0);
+console.log(total);
+
+
+//Set up test case
+let n = 5
+let testInput = 'This is a test\nA test is this\nTry this test\nTest this test\nDone with this test'
+console.log(testInput);
+
+//Split input into an array with each row being an array element
+const rows = testInput.split('\n');
+const rowsRev = new Array;
+
+for (const row of rows) {
+  //Split each row into an array of words
+  const words = row.split(' ');
+  const wordsRev = new Array;
+
+  //Reverse the order of the words and save into a new array
+  for (const word of words) {
+    wordsRev.unshift(word);
+  }
+
+  //Join the words into rows
+  rowsRev.push(wordsRev.join(' '));
+}
+
+//Join the rows into new input
+console.log(rowsRev.join('\n'));
